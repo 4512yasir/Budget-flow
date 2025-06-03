@@ -1,4 +1,3 @@
-// DOM Elements
 const darkToggle = document.getElementById("darkModeToggle");
 const incomeForm = document.getElementById("income-form");
 const expenseForm = document.getElementById("expense-form");
@@ -10,13 +9,25 @@ const totalIncomeEl = document.getElementById("total-income");
 const totalExpenseEl = document.getElementById("total-expense");
 const netBalanceEl = document.getElementById("net-balance");
 
-// State
 let incomes = JSON.parse(localStorage.getItem("incomes")) || [];
 let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
 
-// Dark Mode Toggle
+// Toggle Dark Mode
 darkToggle.addEventListener("click", () => {
   document.body.classList.toggle("dark");
+});
+
+// Handle “Other” category logic
+document.querySelectorAll(".category").forEach((select) => {
+  select.addEventListener("change", function () {
+    const customInput = this.nextElementSibling;
+    if (this.value === "Other") {
+      customInput.style.display = "inline-block";
+      customInput.focus();
+    } else {
+      customInput.style.display = "none";
+    }
+  });
 });
 
 // Add Income
@@ -24,9 +35,14 @@ incomeForm.addEventListener("submit", (e) => {
   e.preventDefault();
   const amount = parseFloat(incomeForm[0].value);
   const description = incomeForm[1].value;
-  const category = incomeForm[2].value;
+  const categorySelect = incomeForm[2];
+  const customCategoryInput = incomeForm[3];
+  const category =
+    categorySelect.value === "Other"
+      ? customCategoryInput.value
+      : categorySelect.value;
 
-  if (!amount || !description) return;
+  if (!amount || !description || !category) return;
 
   incomes.push({
     id: Date.now(),
@@ -45,9 +61,14 @@ expenseForm.addEventListener("submit", (e) => {
   e.preventDefault();
   const amount = parseFloat(expenseForm[0].value);
   const description = expenseForm[1].value;
-  const category = expenseForm[2].value;
+  const categorySelect = expenseForm[2];
+  const customCategoryInput = expenseForm[3];
+  const category =
+    categorySelect.value === "Other"
+      ? customCategoryInput.value
+      : categorySelect.value;
 
-  if (!amount || !description) return;
+  if (!amount || !description || !category) return;
 
   expenses.push({
     id: Date.now(),
@@ -61,6 +82,13 @@ expenseForm.addEventListener("submit", (e) => {
   saveAndUpdate();
 });
 
+// Save to localStorage
+function saveAndUpdate() {
+  localStorage.setItem("incomes", JSON.stringify(incomes));
+  localStorage.setItem("expenses", JSON.stringify(expenses));
+  updateUI();
+}
+
 // Delete Item
 function deleteItem(id, type) {
   if (type === "income") {
@@ -69,13 +97,6 @@ function deleteItem(id, type) {
     expenses = expenses.filter((e) => e.id !== id);
   }
   saveAndUpdate();
-}
-
-// Save to localStorage + update UI
-function saveAndUpdate() {
-  localStorage.setItem("incomes", JSON.stringify(incomes));
-  localStorage.setItem("expenses", JSON.stringify(expenses));
-  updateUI();
 }
 
 // Update UI
@@ -95,14 +116,14 @@ function updateUI() {
   updateChart();
 }
 
-// Render income/expense lists
+// Render income/expense list
 function renderList(listEl, items, type) {
   listEl.innerHTML = "";
   items.forEach((item) => {
     const li = document.createElement("li");
     li.innerHTML = `
       ${item.description} - $${item.amount} [${item.category}]
-      <button onclick="deleteItem(${item.id}, '${type}')">🗑️</button>
+      <button onclick="deleteItem(${item.id}, '${type}')">DELETE</button>
     `;
     listEl.appendChild(li);
   });
@@ -113,11 +134,10 @@ function renderTransactions() {
   const all = [
     ...incomes.map((i) => ({ ...i, type: "income" })),
     ...expenses.map((e) => ({ ...e, type: "expense" })),
-  ];
-  const sorted = all.sort((a, b) => new Date(b.date) - new Date(a.date));
+  ].sort((a, b) => new Date(b.date) - new Date(a.date));
 
   transactionLog.innerHTML = "";
-  sorted.forEach((item) => {
+  all.forEach((item) => {
     const li = document.createElement("li");
     li.innerHTML = `<strong>${item.type === "income" ? "+" : "-"} $${
       item.amount
@@ -127,7 +147,7 @@ function renderTransactions() {
   });
 }
 
-// Setup Chart
+// Chart setup
 const ctx = document.getElementById("categoryChart").getContext("2d");
 let pieChart = new Chart(ctx, {
   type: "pie",
@@ -156,7 +176,6 @@ let pieChart = new Chart(ctx, {
   },
 });
 
-// Update pie chart
 function updateChart() {
   const categoryTotals = {};
   expenses.forEach((exp) => {
@@ -169,5 +188,5 @@ function updateChart() {
   pieChart.update();
 }
 
-// Initial load
+// Initial render
 updateUI();

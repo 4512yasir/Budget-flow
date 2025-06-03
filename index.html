@@ -9,81 +9,75 @@
 </head>
 
 <body>
-    <!-- Header -->
     <header>
-        <div class="container">
-            <h1>💰 BudgetFlow</h1>
-            <button id="darkModeToggle">🌙</button>
-        </div>
+        <h1>💰 BudgetFlow</h1>
+        <button id="darkModeToggle">🌙 Toggle Dark Mode</button>
     </header>
 
-    <!-- Income Section -->
-    <section id="income-section">
-        <h2>Income</h2>
-        <form id="income-form">
-            <input type="number" placeholder="Amount" required />
-            <input type="text" placeholder="Description" required />
-            <select>
-                <option value="salary">Salary</option>
-                <option value="freelance">Freelance</option>
-                <option value="other">Other</option>
-            </select>
-            <button type="submit">Add Income</button>
-        </form>
-        <ul id="income-list">
-            <!-- Income entries go here -->
-        </ul>
-        <div class="total-card">
-            <strong>Total Income:</strong> $<span id="total-income">0</span>
-        </div>
-    </section>
+    <main>
+        <section class="forms">
+            <form id="income-form">
+                <h2>Add Income</h2>
+                <input type="number" placeholder="Amount" required />
+                <input type="text" placeholder="Description" required />
+                <select class="category">
+                    <option value="Salary">Salary</option>
+                    <option value="Bonus">Bonus</option>
+                    <option value="Gift">Gift</option>
+                    <option value="Other">Other</option>
+                </select>
+                <input type="text" class="custom-category" placeholder="Enter custom category" style="display: none;" />
+                <button type="submit">Add Income</button>
+            </form>
 
-    <!-- Expense Section -->
-    <section id="expense-section">
-        <h2>Expense</h2>
-        <form id="expense-form">
-            <input type="number" placeholder="Amount" required />
-            <input type="text" placeholder="Description" required />
-            <select>
-                <option value="food">Food</option>
-                <option value="bills">Bills</option>
-                <option value="shopping">Shopping</option>
-                <option value="other">Other</option>
-            </select>
-            <button type="submit">Add Expense</button>
-        </form>
-        <ul id="expense-list">
-            <!-- Expense entries go here -->
-        </ul>
-        <div class="total-card">
-            <strong>Total Expense:</strong> $<span id="total-expense">0</span>
-        </div>
-    </section>
+            <form id="expense-form">
+                <h2>Add Expense</h2>
+                <input type="number" placeholder="Amount" required />
+                <input type="text" placeholder="Description" required />
+                <select class="category">
+                    <option value="Food">Food</option>
+                    <option value="Bills">Bills</option>
+                    <option value="Transport">Transport</option>
+                    <option value="Other">Other</option>
+                </select>
+                <input type="text" class="custom-category" placeholder="Enter custom category" style="display: none;" />
+                <button type="submit">Add Expense</button>
+            </form>
+        </section>
 
-    <!-- Transaction Summary -->
-    <section id="transactions-section">
-        <h2>All Transactions</h2>
-        <ul id="transaction-log">
-            <!-- Combined transactions (income + expense) -->
-        </ul>
-    </section>
+        <section class="totals">
+            <h2>Totals</h2>
+            <p>Total Income: $<span id="total-income">0.00</span></p>
+            <p>Total Expense: $<span id="total-expense">0.00</span></p>
+            <p>Net Balance: $<span id="net-balance">0.00</span></p>
+        </section>
 
-    <!-- Net Balance & Chart -->
-    <section id="summary-section">
-        <div class="balance-box">
-            <h3>Net Balance</h3>
-            <p>$<span id="net-balance">0</span></p>
-        </div>
-        <div class="chart-box">
-            <h3>Spending Breakdown</h3>
-            <canvas id="categoryChart" width="300" height="300"></canvas>
-        </div>
-    </section>
+        <section class="log">
+            <h2>Transaction Log</h2>
+            <ul id="transaction-log"></ul>
+        </section>
 
-    <!-- Footer -->
+        <section class="lists">
+            <div>
+                <h3>Income Entries</h3>
+                <ul id="income-list"></ul>
+            </div>
+            <div>
+                <h3>Expense Entries</h3>
+                <ul id="expense-list"></ul>
+            </div>
+        </section>
+
+        <section class="chart">
+            <h2>Spending by Category</h2>
+            <canvas id="categoryChart" width="400" height="400"></canvas>
+        </section>
+    </main>
+
     <footer>
-        <p>Made with 💻 by Yaska • <a href="https://github.com/4512yasir" target="_blank">GitHub</a> • © 2025</p>
+        <p>&copy; 2025 BudgetFlow • Manage your money wisely</p>
     </footer>
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="script.js"></script>
 </body>
